@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack Battle - Simulasi Perlumbaan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Landing Page -->
+        <div id="landingPage" class="page active">
+            <div class="header">
+                <h1>🔐 HACK BATTLE</h1>
+                <p class="subtitle">Simulasi Perlumbaan Cybersecurity</p>
+                <p class="warning">⚠️ AMARAN: Ini hanya permainan simulasi rekaan untuk tujuan pendidikan</p>
+            </div>
+            
+            <div class="main-menu">
+                <button class="btn btn-primary" onclick="showCreateRoom()">
+                    <span class="icon">➕</span>
+                    Buat Room Baru
+                </button>
+                <button class="btn btn-secondary" onclick="showJoinRoom()">
+                    <span class="icon">🚪</span>
+                    Join Room
+                </button>
+            </div>
+
+            <div class="info-box">
+                <h3>📖 Cara Bermain</h3>
+                <ol>
+                    <li>Buat atau join room perlumbaan</li>
+                    <li>Kenali parentwork website target</li>
+                    <li>Cari IP address menggunakan terminal</li>
+                    <li>Gunakan addon untuk sabotaj lawan (opsional)</li>
+                    <li>Serang dan tembusi website target</li>
+                    <li>Yang paling cepat menang!</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Create Room Page -->
+        <div id="createRoomPage" class="page">
+            <div class="header">
+                <h2>Buat Room Baru</h2>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label>Nama Anda:</label>
+                    <input type="text" id="hostName" placeholder="Masukkan nama anda">
+                </div>
+                
+                <div class="form-group">
+                    <label>Pilih Parentwork Target:</label>
+                    <select id="parentworkSelect">
+                        <option value="googledd">Googledd</option>
+                        <option value="vercel">Vercel</option>
+                        <option value="cloudflare">Cloudflare</option>
+                        <option value="ngrok">Ngrok</option>
+                        <option value="rizzglo">Rizzglo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>URL Target:</label>
+                    <input type="text" id="targetUrl" placeholder="https://example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Masa Perlumbaan (minit):</label>
+                    <input type="number" id="raceTime" value="5" min="1" max="30">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="createRoom()">Buat Room</button>
+                    <button class="btn btn-secondary" onclick="showLanding()">Kembali</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join Room Page -->
+        <div id="joinRoomPage" class="page">
+            <div class="header">
+                <h2>Join Room</h2>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label>Nama Anda:</label>
+                    <input type="text" id="playerName" placeholder="Masukkan nama anda">
+                </div>
+                
+                <div class="form-group">
+                    <label>Kod Room:</label>
+                    <input type="text" id="roomCode" placeholder="Masukkan kod room">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="joinRoom()">Join Room</button>
+                    <button class="btn btn-secondary" onclick="showLanding()">Kembali</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lobby Page (Host) -->
+        <div id="lobbyPage" class="page">
+            <div class="header">
+                <h2>Lobby Room</h2>
+                <div class="room-code-display">
+                    <span>Kod Room: <strong id="displayRoomCode">------</strong></span>
+                </div>
+            </div>
+
+            <div class="lobby-container">
+                <div class="target-info">
+                    <h3>🎯 Maklumat Target</h3>
+                    <p><strong>Parentwork:</strong> <span id="lobbyParentwork">-</span></p>
+                    <p><strong>URL:</strong> <span id="lobbyUrl">-</span></p>
+                </div>
+
+                <div class="players-list">
+                    <h3>👥 Pemain dalam Room (<span id="playerCount">0</span>)</h3>
+                    <div id="playersList"></div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="startGameBtn" onclick="startGame()">Mulakan Perlumbaan</button>
+                    <button class="btn btn-danger" onclick="leaveRoom()">Keluar Room</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Page -->
+        <div id="gamePage" class="page">
+            <div class="game-header">
+                <div class="game-info">
+                    <span class="timer">⏱️ Masa: <span id="timer">5:00</span></span>
+                    <span class="stage">Tahap: <span id="currentStage">1/4</span></span>
+                </div>
+            </div>
+
+            <div class="game-container">
+                <!-- Stage 1: Kenali Parentwork -->
+                <div id="stage1" class="stage-panel active">
+                    <h2>Tahap 1: Kenali Parentwork</h2>
+                    <div class="target-display">
+                        <p><strong>URL Target:</strong> <span id="gameUrl">-</span></p>
+                        <p class="hint">💡 Lihat pattern URL untuk kenali parentwork</p>
+                    </div>
+                    
+                    <div class="parentwork-options">
+                        <button class="option-btn" onclick="selectParentwork('googledd')">Googledd</button>
+                        <button class="option-btn" onclick="selectParentwork('vercel')">Vercel</button>
+                        <button class="option-btn" onclick="selectParentwork('cloudflare')">Cloudflare</button>
+                        <button class="option-btn" onclick="selectParentwork('ngrok')">Ngrok</button>
+                        <button class="option-btn" onclick="selectParentwork('rizzglo')">Rizzglo</button>
+                    </div>
+                </div>
+
+                <!-- Stage 2: Cari IP -->
+                <div id="stage2" class="stage-panel">
+                    <h2>Tahap 2: Cari IP Website</h2>
+                    <div class="terminal">
+                        <div class="terminal-header">Terminal</div>
+                        <div class="terminal-body">
+                            <div id="terminalOutput"></div>
+                            <div class="terminal-input-line">
+                                <span class="prompt">$</span>
+                                <input type="text" id="terminalInput" class="terminal-input" placeholder="Taip arahan di sini...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hint-box">
+                        <p><strong>Arahan yang diperlukan:</strong></p>
+                        <code>Parentwork = [nama_parentwork]</code><br>
+                        <code>Url = [url_target]</code><br>
+                        <code>Find.ip.url.parent()</code>
+                    </div>
+                </div>
+
+                <!-- Stage 3: Addon -->
+                <div id="stage3" class="stage-panel">
+                    <h2>Tahap 3: Pilih Addon (Opsional)</h2>
+                    <p class="description">Pilih addon untuk sabotaj lawan atau teruskan tanpa addon</p>
+                    
+                    <div class="addon-list">
+                        <div class="addon-card" onclick="selectAddon('kill_air')">
+                            <h3>⚡ Kill Air</h3>
+                            <p>Block input lawan selama 10 saat</p>
+                        </div>
+                        <div class="addon-card" onclick="selectAddon('change_parentwork')">
+                            <h3>🔄 Change Parentwork</h3>
+                            <p>Tukar parentwork device lawan</p>
+                        </div>
+                        <div class="addon-card" onclick="selectAddon('ddos')">
+                            <h3>💥 DDOS Attack</h3>
+                            <p>Reset semua progress lawan</p>
+                        </div>
+                        <div class="addon-card" onclick="selectAddon('none')">
+                            <h3>⏩ Tanpa Addon</h3>
+                            <p>Teruskan tanpa sabotaj</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 4: Serang -->
+                <div id="stage4" class="stage-panel">
+                    <h2>Tahap 4: Serang dan Tembusi</h2>
+                    <div class="terminal">
+                        <div class="terminal-header">Attack Terminal</div>
+                        <div class="terminal-body">
+                            <div id="attackOutput"></div>
+                            <div class="terminal-input-line">
+                                <span class="prompt">$</span>
+                                <input type="text" id="attackInput" class="terminal-input" placeholder="Taip arahan serangan...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hint-box">
+                        <p><strong>Arahan serangan:</strong></p>
+                        <code>Rules = down</code><br>
+                        <code>Ip = [ip_yang_didapat]</code><br>
+                        <code>Parentwork = [parentwork_target]</code><br>
+                        <code>Addon = [addon_yang_dipilih]</code><br>
+                        <code>Choose.rules_in.ip_pw.parentwork()</code><br>
+                        <code>Start all()</code><br>
+                        <code>Started addon</code>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Sidebar -->
+                <div class="leaderboard">
+                    <h3>🏆 Kedudukan</h3>
+                    <div id="leaderboardList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Page -->
+        <div id="resultsPage" class="page">
+            <div class="header">
+                <h1>🏁 Keputusan Perlumbaan</h1>
+            </div>
+            
+            <div class="results-container">
+                <div class="winner-display">
+                    <h2>🏆 Pemenang</h2>
+                    <div id="winnerName" class="winner-name">-</div>
+                    <div id="winnerTime" class="winner-time">Masa: -</div>
+                </div>
+
+                <div class="final-leaderboard">
+                    <h3>Kedudukan Akhir</h3>
+                    <div id="finalLeaderboard"></div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showLanding()">Kembali ke Menu Utama</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
